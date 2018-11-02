@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.AuditMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<select id="findAuditPage" resultType="com.numberONe.entity.DeviceRepairFormMap">
+		SELECT
+		top(100000)
+		device_repair.id AS id,
+		rp_number,
+		device_id,
+		reporttime,
+		reportman,
+		tel,
+		trouble,
+		confirm_status,
+		begintime,
+		repairman,
+		workinfo,
+		rp_cost,
+		stoptime,
+		repairtime,
+		faultcauser,
+		rp_leader,
+		repairnum,
+		isreplace,
+		confirmTime,
+		dnumber,
+		dname
+		FROM
+		device_repair
+		WHERE delState = 1 AND confirm_status = 1
+		<if test="reportman != null and reportman != ''">
+		AND reportman like '%${reportman}%'
+		</if>
+		<if test="rp_number != null and rp_number != ''">
+		AND rp_number = '${rp_number}'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+	 <!-- 不管时通过还是退回 都要做这个操作 1.查询这个单号的状态等于几 -->
+    <select id="confirm_status" parameterType="String" resultType="int">
+    	SELECT 
+    	confirm_status 
+    	FROM device_repair 
+    	WHERE rp_number = #{rp_number}
+    </select>
+    <!--通过 2.把confirm_status状态更新为等于2,给confirmTime更新一个最新的当前时间 ,把reporttime和confirmTime时间差插入repairtime -->
+    <update id="through">
+		UPDATE 
+    	device_repair 
+    	SET 
+    	confirm_status = 2,
+    	confirmTime = (SELECT CONVERT(varchar(100),GETDATE(),21)),
+    	repairtime = datediff(mi,reporttime,confirmTime)
+    	WHERE rp_number = #{rp_number}
+	</update>
+    
+     <!-- 退回 2.把confirm_status状态更新为等于0,repairnum+1,给confirmTime更新一个最新的当前时间 ,把reporttime和confirmTime时间差插入repairtime-->
+    <update id="back">
+    	UPDATE
+    	device_repair 
+    	SET 
+    	confirm_status = 0,
+    	repairnum = repairnum + 1,
+    	confirmTime = (SELECT CONVERT(varchar(100), GETDATE(), 21)),
+    	repairtime = datediff(mi,reporttime,confirmTime)  
+    	WHERE rp_number = #{rp_number}
+    </update>
+	
+</mapper>

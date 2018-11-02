@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.mapper2.ModuleGrossMarginMapper">
+
+	<select id="selectModule" resultType="com.numberONe.entity.ModuleGrossMargin">
+
+		
+		SELECT '${order_no}' order_no,b.ItemName ,b.exchRate,a.ItemID,a.OrderNum from SaleOrderDetTB a 
+		left join ItemTB b ON a.ItemID=b.ItemID 
+
+		where a.SaleOrderNo=(select SaleOrderNo from SaleOrderHedTB where CompactNo='${order_no}')
+	</select>
+	<select id="selectModuleGrossMargin" resultType="com.numberONe.entity.MatertialBasicInfor">
+		
+	SELECT a.itemId,a.Dosage,a.WasteRate,a.ReqNum,a.itemname ,a.itemSpc,a.itemUnit,a.itemParam FROM TaskMatTB a
+	
+	where a.CompactNo='${order_no}'and a.CpId='${itemID}'
+		
+	</select>
+	
+
+
+
+</mapper>

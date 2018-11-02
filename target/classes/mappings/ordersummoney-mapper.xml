@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.mapper2.OrderSumMoneyMapper">
+	
+
+<!-- 	<select id="orderSumMoney" resultType="com.numberONe.entity.OrderSumMoney">
+SELECT f.compactno ,SUM(f.AllMoney) AllMoney from
+(
+select c.iono,b.itemid,ISNULL(b.CompactNo,'') CompactNo,b.luhao ,ISNULL(e.AllMoney, 0) AllMoney from
+(select * from InOutBillHedTB a where a.IONo LIKE '%FLCK%' and a.AuditFlag='1' and (a.IODeptID='10' or a.IODeptID='20')
+
+	<if test="starttime != null and starttime != ''">
+		AND a.IODate &gt;= '${starttime}'
+	</if>
+	<if test="endtime != null and endtime != ''">
+		AND a.IODate &lt;= '${endtime}'
+	</if>
+ ) c
+LEFT JOIN InOutBillDetTB  b on c.IONo=b.iono
+left join 
+(
+select a.stockorderno,a.CompactNo ,b.itemId ,b.AllMoney from StockOrderHedTB a
+left join StockOrderDetTB b on  a.stockorderno=b.stockorderno) e on b.luhao=e.CompactNo and b.itemid=e.itemid
+) f GROUP BY f.compactno 
+	</select> -->
+	
+<select id="orderSumMoney" resultType="com.numberONe.entity.OrderSumMoney">
+
+select h.compactno,h.allmoney, sum(g.ordernum) ordernum,sum(g.salemoney) salemoney from (
+SELECT f.compactno ,SUM(f.AllMoney) AllMoney from
+(
+select c.iono,b.itemid,ISNULL(b.CompactNo,'') CompactNo,b.luhao ,ISNULL(e.AllMoney, 0) AllMoney from
+(select * from InOutBillHedTB a where a.IONo LIKE '%FLCK%' and a.AuditFlag='1' and (a.IODeptID='10' or a.IODeptID='20') 
+
+	<if test="starttime != null and starttime != ''">
+		AND a.IODate &gt;= '${starttime}'
+	</if>
+	<if test="endtime != null and endtime != ''">
+		AND a.IODate &lt;= '${endtime}'
+	</if>
+
+) c
+
+LEFT JOIN InOutBillDetTB  b on c.IONo=b.iono
+left join 
+(
+select a.stockorderno,a.CompactNo ,b.itemId ,b.AllMoney from StockOrderHedTB a
+left join StockOrderDetTB b on  a.stockorderno=b.stockorderno) e on b.luhao=e.CompactNo and b.itemid=e.itemid
+) f GROUP BY f.compactno 
+) h LEFT JOIN 
+(SELECT a.compactno,b.ordernum,b.allmoney salemoney from SaleOrderHedTB a left join SaleOrderDetTB b on a.saleorderno=b.saleorderno) g on h.compactno=g.compactno
+
+GROUP BY h.compactno , h.allmoney
+	</select>
+
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans-4.1.xsd   
+    http://www.springframework.org/schema/context   
+    http://www.springframework.org/schema/context/spring-context-4.1.xsd  
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+    http://www.springframework.org/schema/task 
+    http://www.springframework.org/schema/task/spring-task-4.1.xsd     
+    http://www.springframework.org/schema/aop 
+     http://www.springframework.org/schema/aop/spring-aop-4.1.xsd"
+     default-lazy-init="false"> 
+ 
+<!-- 定时器开关 开始 -->
+	<task:annotation-driven />
+	<!-- 标注类型 的事务配置 如果使用注解事务。就放开
+	<tx:annotation-driven />-->
+	
+	<!-- 统一异常处理方式 -->
+	<bean id="exceptionHandler" class="com.numberONe.exception.MyExceptionHandler"/>
+	<!-- 初始化数据 -->
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+	       <property name ="locations">
+	           <list>
+	            <value>classpath:jdbc.properties</value>
+	            <value>classpath:jdbc2.properties</value>
+	           </list>
+	       </property>
+	       <property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+			<property name="driverClassName" value="${jdbc.driverClass}" />
+	</bean>
+	<bean id="dataSource2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="url" value="${jdbc2.url}" />
+			<property name="username" value="${jdbc2.username}" />
+			<property name="password" value="${jdbc2.password}" />
+			<property name="driverClassName" value="${jdbc2.driverClass}" />
+	</bean>
+	
+	<bean id="dynamicDataSource" class="com.numberONe.datasource.DynamicDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="ds1" value-ref="dataSource"/>
+                <entry key="ds2" value-ref="dataSource2"/>
+            </map>
+        </property>
+        <!--默认数据源-->
+        <property name="defaultTargetDataSource" ref="dataSource"/> 
+  </bean>
+
+	
+	
+	<bean id="pagePlugin" class="com.numberONe.plugin.PagePlugin">
+		<property name="properties">
+			<props>
+				<!-- <prop key="dialect">mysql</prop> -->
+				<prop key="dialect">SQLServer2008</prop>
+				<prop key="pageSqlId">.*query.*</prop>
+			</props>
+		</property>
+	</bean>
+	 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dynamicDataSource" />
+		<property name="mapperLocations" value="classpath:mappings/*-mapper.xml"/>
+		<property name="typeAliasesPackage" value="com.numberONe.entity"/>
+		<property name="plugins">
+			<array>
+				<ref bean="pagePlugin" />
+			</array>
+		</property>
+	</bean> 
+	
+
+
+	<!-- 通过扫描的模式，扫描目录在com.numberONe.mapper目录下，所有的mapper都继承SqlMapper接口的接口， 这样一个bean就可以了 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.numberONe.mapper" />
+	</bean>
+	<!-- 事务配置 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dynamicDataSource" />
+	</bean>
+	
+	<bean id="dataSourceExchange" class="com.numberONe.datasource.DataSourceExchange"/>
+	<aop:config>
+	    <aop:aspect ref="dataSourceExchange">
+	        <aop:pointcut id="dataSourcePointcut" expression="execution(* com.numberONe.mapper.mapper2.*.*(..))"/>
+	        <aop:before pointcut-ref="dataSourcePointcut" method="before"/>
+	        <aop:after pointcut-ref="dataSourcePointcut" method="after"/>
+	    </aop:aspect>
+	</aop:config> 
+
+
+	<!-- 使用Spring组件扫描的方式来实现自动注入bean -->
+	<context:component-scan base-package="com.numberONe.task" />
+	<!-- 隐式地向 Spring 容器注册 -->
+	<context:annotation-config />
+</beans>

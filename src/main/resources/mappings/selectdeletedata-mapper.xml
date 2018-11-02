@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.OrderProgressMapper">
+	<resultMap type="com.numberONe.entity.processData.CellDataHis" id="CellDataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="cell_code" column="cell_code"/>
+		<result property="cell_code2" column="cell_code2"/>
+		<result property="cell_code3" column="cell_code3"/>
+		<result property="cell_op" column="cell_op"/>
+		<result property="cell_mc" column="cell_mc"/>
+		<result property="createtime" column="createtime"/>
+		<result property="line" column="line"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="computer" column="computer"/>
+		<result property="op" column="op"/>
+	</resultMap>
+	<resultMap type="com.numberONe.entity.processData.CyDataHis" id="CyDataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="locationno" column="locationno"/>
+		<result property="op" column="op"/>
+		<result property="createtime" column="createtime"/>
+		<result property="computer" column="computer"/>
+		<result property="shiftName" column="shiftName"/>
+		<result property="EquipCode" column="EquipCode"/>
+		<result property="line" column="line"/>
+		<result property="Reserve2" column="Reserve2"/>
+		<result property="Reserve3" column="Reserve3"/>
+		<result property="Reserve4" column="Reserve4"/>
+		<result property="Reserve5" column="Reserve5"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	<resultMap type="com.numberONe.entity.processData.FrameDataHis" id="FrameDataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="createtime" column="createtime"/>
+		<result property="op" column="op"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="ShiftName" column="ShiftName"/>
+		<result property="line" column="line"/>
+		<result property="computername" column="computername"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	<resultMap type="com.numberONe.entity.processData.FtDataHis" id="FtDataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="test_time" column="test_time"/>
+		<result property="ncell" column="ncell"/>
+		<result property="rsh" column="Rsh"/>
+		<result property="rs" column="Rs"/>
+		<result property="fF" column="FF"/>
+		<result property="isc" column="Isc"/>
+		<result property="voc" column="Voc"/>
+		<result property="imax" column="Imax"/>
+		<result property="vmax" column="Vmax"/>
+		<result property="pmax" column="Pmax"/>
+		<result property="envTemp" column="EnvTemp"/>
+		<result property="surfTemp" column="SurfTemp"/>
+		<result property="op" column="op"/>
+		<result property="computer" column="Computer"/>
+		<result property="f_power" column="f_power"/>
+		<result property="iv_path" column="iv_path"/>
+		<result property="f_ia" column="f_ia"/>
+		<result property="shiftName" column="ShiftName"/>
+		<result property="line" column="line"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="nmodule" column="nmodule"/>
+		<result property="createtime" column="createtime"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	<resultMap type="com.numberONe.entity.processData.LayingDataHis" id="LayingDataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="op" column="op"/>
+		<result property="createtime" column="createtime"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="Computer" column="Computer"/>
+		<result property="line" column="line"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	<resultMap type="com.numberONe.entity.processData.PkgInfoDataHis" id="PkgInfoDataHisResult">
+		<result property="id" column="id"/>
+		<result property="module_code" column="module_code"/>
+		<result property="package_codel" column="package_codel"/>
+		<result property="module_model" column="module_model"/>
+		<result property="Material_Number" column="Material_Number"/>
+		<result property="grade" column="grade"/>
+		<result property="fPower" column="fPower"/>
+		<result property="moduleseries" column="moduleseries"/>
+		<result property="op" column="op"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+	</resultMap>	
+	<resultMap type="com.numberONe.entity.processData.El1DataHis" id="El1DataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="el_test_time" column="el_test_time"/>
+		<result property="result" column="result"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="op" column="op"/>
+		<result property="imagepath" column="imagepath"/>
+		<result property="ShiftName" column="ShiftName"/>
+		<result property="line" column="line"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	
+	<resultMap type="com.numberONe.entity.processData.El3DataHis" id="El3DataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="el_test_time" column="el_test_time"/>
+		<result property="result" column="result"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="op" column="op"/>
+		<result property="imagepath" column="imagepath"/>
+		<result property="ShiftName" column="ShiftName"/>
+		<result property="line" column="line"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+
+	<resultMap type="com.numberONe.entity.processData.FqcDataHis" id="FqcDataHisResult">
+		<result property="module_code" column="module_code"/>
+		<result property="fqc_time" column="fqc_time"/>
+		<result property="grade" column="grade"/>
+		<result property="defectdetail" column="defectdetail"/>
+		<result property="remark" column="remark"/>
+		<result property="op" column="op"/>
+		<result property="Computer" column="Computer"/>
+		<result property="back_code" column="back_code"/>
+		<result property="bk_code" column="bk_code"/>
+		<result property="ShiftName" column="ShiftName"/>
+		<result property="color" column="color"/>
+		<result property="line" column="line"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	
+	<resultMap type="com.numberONe.entity.processData.Cuttingdatahis" id="CuttingdatahisResult">
+		<result property="modulecode" column="modulecode"/>
+		<result property="isprint" column="isprint"/>
+		<result property="isrfid" column="isrfid"/>
+		<result property="op" column="op"/>
+		<result property="createtime" column="createtime"/>
+		<result property="equipcode" column="equipcode"/>
+		<result property="line" column="line"/>
+		<result property="shift" column="shift"/>
+		<result property="delop" column="delop"/>
+		<result property="deltime" column="deltime"/>
+		<result property="effective" column="effective"/>
+	</resultMap>
+	<!-- 分片 -->
+	<select id="selectProcessHis_Cell" parameterType="String" resultMap="CellDataHisResult">
+		SELECT module_code,cell_code,cell_code2,cell_code3,cell_op,cell_mc,createtime,line,op,delop,deltime,'N'AS effective FROM Process_CellDataHis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		SELECT module_code,cell_code,cell_code2,cell_code3,cell_op,cell_mc,createtime,line,op,'','','Y'AS effective FROM Process_Cell_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+	<!-- 层压 -->
+	<select id="selectProcessHis_Cy" parameterType="String" resultMap="CyDataHisResult">
+		SELECT module_code,locationno,op,createtime,computer,shiftName,EquipCode,line,Reserve2,Reserve3,Reserve4,Reserve5,delop,deltime,'N'AS effective FROM Process_CyDataHis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>		
+		UNION		
+		SELECT module_code,locationno,op,createtime,computer,shiftName,EquipCode,line,Reserve2,Reserve3,Reserve4,Reserve5,'','','Y'AS effective FROM Process_Cy_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>		
+	</select>
+	
+	<!-- 装框 -->
+	<select id="selectProcessHis_Frame" parameterType="String" resultMap="FrameDataHisResult">
+		SELECT module_code,createtime,op,equipcode,ShiftName,line,computername,delop,deltime,'N'AS effective FROM Process_FrameDataHis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		SELECT module_code,createtime,op,equipcode,ShiftName,line,computername,'','','Y'AS effective FROM Process_Frame_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+
+	<!-- IV测试 -->
+	<select id="selectProcessHis_Ft" parameterType="String" resultMap="FtDataHisResult">
+		SELECT module_code,test_time,ncell,Rsh,Rs,FF,Isc,Voc,Imax,Vmax,Pmax,EnvTemp,SurfTemp,op,Computer,f_power,iv_path,f_ia,ShiftName,line,equipcode,nmodule,createtime,delop,deltime,'N'AS effective FROM Process_FtDataHis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		SELECT module_code,test_time,ncell,Rsh,Rs,FF,Isc,Voc,Imax,Vmax,Pmax,EnvTemp,SurfTemp,op,Computer,f_power,iv_path,f_ia,ShiftName,line,equipcode,nmodule,createtime,'','','Y'AS effective FROM Process_Ft_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+
+	<!-- 拼接 -->
+	<select id="selectProcessHis_Laying" parameterType="String" resultMap="LayingDataHisResult">
+		SELECT module_code,equipcode,createtime,Computer,line,op,delop,deltime,'N'AS effective FROM Process_LayingDataHis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		SELECT module_code,equipcode,createtime,Computer,line,op,'','','Y'AS effective FROM Process_Laying_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+
+	<!-- PKG-->
+	<select id="selectProcessHis_Pkg" parameterType="String" resultMap="PkgInfoDataHisResult">
+		select module_code,package_code,module_model,Material_Number,grade,fPower,moduleseries,op,delop,deltime,'N'AS effective from process_pkgrelationhis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		union 
+		select module_code,package_code,module_model,Material_Number,grade,fPower,moduleseries,op,'','','Y'AS effective from process_pkg_relation
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+
+	<!-- 前道EL -->
+	<select id="selectProcessHis_El1" parameterType="String" resultMap="El1DataHisResult">
+		SELECT module_code,el_test_time,result,equipcode,op,imagepath,ShiftName,line,delop,deltime,'N'AS effective FROM Process_El1DataHis 
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		SELECT module_code,el_test_time,result,equipcode,op,imagepath,ShiftName,line,'','','Y'AS effective FROM Process_El1_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+
+	<!-- 后道EL -->
+	<select id="selectProcessHis_El3" parameterType="String" resultMap="El3DataHisResult">
+		select module_code,el_test_time,result,equipcode,op,imagepath,ShiftName,line,delop,deltime,'N'AS effective from Process_El3datahis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		select module_code,el_test_time,result,equipcode,op,imagepath,ShiftName,line,'','','Y'AS effective from Process_El3_data 
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		
+	</select>
+
+	<!-- FQC -->
+	<select id="selectProcessHis_Fqc" parameterType="FqcDataHis" resultMap="FqcDataHisResult">
+		SELECT module_code,fqc_time,grade,defectdetail,remark,op,Computer,back_code,bk_code,ShiftName,color,line,equipcode,delop,deltime,'N'AS effective FROM Process_fqcdatahis
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+		UNION
+		SELECT  module_code,fqc_time,grade,defectdetail,remark,op,Computer,back_code,bk_code,ShiftName,color,line,equipcode,'','','Y'AS effective FROM process_fqc_data
+		WHERE 1=1
+		<if test="module_code != null and module_code != ''">
+		AND	module_code = '${module_code}'
+		</if>
+	</select>
+
+	<select id="selectProcessHis_Cutting" parameterType="String" resultMap="CuttingdatahisResult">
+		SELECT modulecode,isprint,isrfid,op,createtime,equipcode,line,shift,delop,deltime,'N'AS effective FROM process_Cuttingdatahis
+		WHERE 1=1
+		<if test="modulecode != null and modulecode != ''">
+		AND	modulecode = '${modulecode}'
+		</if>
+		
+		UNION
+		
+		SELECT modulecode,isprint,isrfid,op,createtime,equipcode,line,shift,'','','Y'AS effective FROM process_Cutting_data
+		WHERE 1=1
+		<if test="modulecode != null and modulecode != ''">
+		AND	modulecode = '${modulecode}'
+		</if>
+		
+	</select>
+	<select id="selectComponentDetails" resultType="com.numberONe.entity.processData.ComponentDetails">
+		select a.order_no,a.module_code,fp.cell_code as cellcode,fp.cell_mc as fpequip,fp.line as fpline,fp.createtime as fptime,pj.op as pjop,pj.createtime as pjtime,pj.equipcode as pjequip,pj. line as pjline,el1.op as el1op,el1.el_test_time as el1time,el1.equipcode as el1euip,el1.line as el1line,el1.result as el1result,cy.EquipCode as cyequip,cy.op as cyop,cy.createtime as cytime,cy.line as cyline,fra.createtime as zktime,fra.op as zkop,fra.equipcode as zkequip,ft.test_time as fttime,ft.Pmax,ft.FF,ft.Isc,ft.Voc,ft.Imax,ft.op as ftop,ft.f_power,ft.f_ia,ft.line as ftline,ft.equipcode as ftequip,el3.el_test_time as el3time,el3.result as el3result,el3.equipcode as el3equip,
+		el3.line as el3line,fqc.fqc_time as fqctime,fqc.grade as fqcgrade,fqc.color,fqc.equipcode as fqcequip,pkg.package_code from list_order_module_code a left join Process_Cell_data fp on a.module_code = fp.module_code left join Process_Laying_data pj on a.module_code = pj.module_code left join Process_El1_data el1 on a.module_code = el1.module_code left join Process_Cy_data cy on a.module_code = cy.module_code left join process_Cutting_data cut on a.module_code = cut.modulecode left join
+		Process_Frame_data fra on a.module_code = fra.module_code left join Process_Ft_data ft on a.module_code = ft.module_code left join Process_El3_data el3 on a.module_code = el3.module_code left join process_fqc_data fqc on a.module_code = fqc.module_code left join process_pkg_relation pkg on a.module_code = pkg.module_code 
+ 		where 1 = 1 
+ 		<if test="module_code != null and module_code != ''">
+		AND
+		a.module_code='${module_code}'
+		</if>
+ 		<if test="order_no != null and order_no != ''">
+		AND
+		a.order_no='${order_no}'
+		</if>
+	</select>
+	
+	<!-- <select id="selectMaterialMode"  resultType="com.numberONe.entity.MateriaModeForMap">
+		select a.order_no as orderno,b.ModuleCode,b.MeterialName as mname,
+		 b.MeterialCode mcode, c.BillSupplier as sup,c.LotNum 
+		from list_order_module_code a 
+		left join Base_MeterialDeduct b on a.module_code=b.ModuleCode 
+		left join Base_Materiallist c on b.MeterialCode=c.CreateLotNum
+		 where 1=1
+ 		<if test="module_code != null and module_code != ''">
+		AND
+		b.ModuleCode='${module_code}'
+		</if>
+ 		<if test="order_no != null and order_no != ''">
+		AND
+		a.order_no='${order_no}'
+		</if>	 
+	</select> -->
+	<resultMap type="com.numberONe.entity.MateriaModeForMap" id="MaterialModeResult">
+		<result property="orderno" column="orderno"/>
+		<result property="moduleCode" column="ModuleCode"/>
+		
+		<result property="eva1Bar" column="EVA1条码"/>
+		<result property="eva1Fac" column="EVA1厂商"/>
+		<result property="eva1Erp" column="EVA1ERP批次"/>
+		
+		<result property="eva2Bar" column="EVA2条码"/>
+		<result property="eva2Fac" column="EVA2厂商"/>
+		<result property="eva2Erp" column="EVA2ERP批次"/>
+		
+		<result property="evaSmalBar" column="EVA小条条码"/>
+		<result property="evaSmalFac" column="EVA小条厂商"/>
+		<result property="evaSmalErp" column="EVA小条ERP批次"/>
+		
+		<result property="backBar" column="背板条码"/>
+		<result property="backFac" column="背板厂商"/>
+		<result property="backErp" column="背板ERP批次"/>
+		
+		<result property="frameBar" column="边框密封胶条码"/>
+		<result property="frameFac" column="边框密封胶厂商"/>
+		<result property="frameErp" column="边框密封胶ERP批次"/>
+		
+		<result property="glassBar" column="玻璃条码"/>
+		<result property="glassFac" column="玻璃厂商"/>
+		<result property="glassErp" column="玻璃ERP批次"/>
+		
+		<result property="longFrameBar" column="长边框条码"/>
+		<result property="longFrameFac" column="长边框厂商"/>
+		<result property="longFrameErp" column="长边框ERP批次"/>
+		
+		<result property="shortFrameBar" column="短边框条码"/>
+		<result property="shortFrameFac" column="短边框厂商"/>
+		<result property="shortFrameErp" column="短边框ERP批次"/>
+		
+		<result property="pourBar" column="灌封胶条码"/>
+		<result property="pourFac" column="灌封胶厂商"/>
+		<result property="pourErp" column="灌封胶ERP批次"/>
+		
+		<result property="interBar" column="互连条条码"/>
+		<result property="interFac" column="互连条厂商"/>
+		<result property="interErp" column="互连条ERP批次"/>
+		
+		<result property="infallBar" column="汇流条条码"/>
+		<result property="infallFac" column="汇流条厂商"/>
+		<result property="infallErp" column="汇流条ERP批次"/>
+		
+		<result property="boxBar" column="接线盒条码"/>
+		<result property="boxFac" column="接线盒厂商"/>
+		<result property="boxErp" column="接线盒ERP批次"/>
+		
+		<result property="insulatBar" column="绝缘小条条码"/>
+		<result property="insulatFac" column="绝缘小条厂商"/>
+		<result property="insulatErp" column="绝缘小条ERP批次"/>
+		
+		<result property="baffleBar" column="遮挡条条码"/>
+		<result property="baffleFac" column="遮挡条厂商"/>
+		<result property="baffleErp" column="遮挡条ERP批次"/>
+		
+	</resultMap>
+		
+	
+	<select id="selectMaterialMode"  resultMap="MaterialModeResult" >
+		select a.order_no as orderno,b.ModuleCode,
+		MAX(CASE b.MeterialName WHEN 'EVA1' THEN b.MeterialCode ELSE '' END ) 'EVA1条码',MAX(CASE b.MeterialName WHEN 'EVA1' THEN c.BillSupplier ELSE '' END ) 'EVA1厂商',MAX(CASE b.MeterialName WHEN 'EVA1' THEN c.LotNum ELSE '' END ) 'EVA1ERP批次',
+		MAX(CASE b.MeterialName WHEN 'EVA2' THEN b.MeterialCode ELSE '' END ) 'EVA2条码',MAX(CASE b.MeterialName WHEN 'EVA2' THEN c.BillSupplier ELSE '' END ) 'EVA2厂商',MAX(CASE b.MeterialName WHEN 'EVA2' THEN c.LotNum ELSE '' END ) 'EVA2ERP批次',
+		MAX(CASE b.MeterialName WHEN 'EVA小条' THEN b.MeterialCode ELSE '' END ) 'EVA小条条码',MAX(CASE b.MeterialName WHEN 'EVA小条' THEN c.BillSupplier ELSE '' END ) 'EVA小条厂商',MAX(CASE b.MeterialName WHEN 'EVA小条' THEN c.LotNum ELSE '' END ) 'EVA小条ERP批次',
+		MAX(CASE b.MeterialName WHEN '背板' THEN b.MeterialCode ELSE '' END ) '背板条码',MAX(CASE b.MeterialName WHEN '背板' THEN c.BillSupplier ELSE '' END ) '背板厂商',MAX(CASE b.MeterialName WHEN '背板' THEN c.LotNum ELSE '' END ) '背板ERP批次',
+		MAX(CASE b.MeterialName WHEN '边框密封胶' THEN b.MeterialCode ELSE '' END ) '边框密封胶', MAX(CASE b.MeterialName WHEN '边框密封胶' THEN c.BillSupplier ELSE '' END ) '边框密封胶', MAX(CASE b.MeterialName WHEN '边框密封胶' THEN c.LotNum ELSE '' END ) '边框密封胶ERP批次', 
+		MAX(CASE b.MeterialName WHEN '玻璃' THEN b.MeterialCode ELSE '' END ) '玻璃条码',MAX(CASE b.MeterialName WHEN '玻璃' THEN c.BillSupplier ELSE '' END ) '玻璃厂商',MAX(CASE b.MeterialName WHEN '玻璃' THEN c.LotNum ELSE '' END ) '玻璃ERP批次',
+		MAX(CASE b.MeterialName WHEN '长边框' THEN b.MeterialCode ELSE '' END ) '长边框条码',MAX(CASE b.MeterialName WHEN '长边框' THEN c.BillSupplier ELSE '' END ) '长边框厂商',MAX(CASE b.MeterialName WHEN '长边框' THEN c.LotNum ELSE '' END ) '长边框ERP批次',
+		MAX(CASE b.MeterialName WHEN '短边框' THEN b.MeterialCode ELSE '' END ) '短边框条码',MAX(CASE b.MeterialName WHEN '短边框' THEN c.BillSupplier ELSE '' END ) '短边框厂商',MAX(CASE b.MeterialName WHEN '短边框' THEN c.LotNum ELSE '' END ) '短边框ERP批次',
+		MAX(CASE b.MeterialName WHEN '灌封胶' THEN b.MeterialCode ELSE '' END ) '灌封胶条码',MAX(CASE b.MeterialName WHEN '灌封胶' THEN c.BillSupplier ELSE '' END ) '灌封胶厂商',MAX(CASE b.MeterialName WHEN '灌封胶' THEN c.LotNum ELSE '' END ) '灌封胶ERP批次',
+		MAX(CASE b.MeterialName WHEN '互连条' THEN b.MeterialCode ELSE '' END ) '互连条条码', MAX(CASE b.MeterialName WHEN '互连条' THEN c.BillSupplier ELSE '' END ) '互连条厂商', MAX(CASE b.MeterialName WHEN '互连条' THEN c.LotNum ELSE '' END ) '互连条ERP批次', 
+		MAX(CASE b.MeterialName WHEN '汇流条' THEN b.MeterialCode ELSE '' END ) '汇流条条码',MAX(CASE b.MeterialName WHEN '汇流条' THEN c.BillSupplier ELSE '' END ) '汇流条厂商',MAX(CASE b.MeterialName WHEN '汇流条' THEN c.LotNum ELSE '' END ) '汇流条ERP批次',
+		MAX(CASE b.MeterialName WHEN '接线盒' THEN b.MeterialCode ELSE '' END ) '接线盒条码',MAX(CASE b.MeterialName WHEN '接线盒' THEN c.BillSupplier ELSE '' END ) '接线盒厂商',MAX(CASE b.MeterialName WHEN '接线盒' THEN c.LotNum ELSE '' END ) '接线盒ERP批次',
+		MAX(CASE b.MeterialName WHEN '绝缘小条' THEN b.MeterialCode ELSE '' END ) '绝缘小条条码',MAX(CASE b.MeterialName WHEN '绝缘小条' THEN c.BillSupplier ELSE '' END ) '绝缘小条厂商',MAX(CASE b.MeterialName WHEN '绝缘小条' THEN c.LotNum ELSE '' END ) '绝缘小条ERP批次',
+		MAX(CASE b.MeterialName WHEN '遮挡条' THEN b.MeterialCode ELSE '' END ) '遮挡条条码',MAX(CASE b.MeterialName WHEN '遮挡条' THEN c.BillSupplier ELSE '' END ) '遮挡条厂商',MAX(CASE b.MeterialName WHEN '遮挡条' THEN c.LotNum ELSE '' END ) '遮挡条ERP批次'
+		from list_order_module_code a 
+		left join Base_MeterialDeduct b on a.module_code=b.ModuleCode 
+		left join Base_Materiallist c on b.MeterialCode=c.CreateLotNum 
+		GROUP BY a.order_no , b.ModuleCode
+		HAVING 1=1
+ 		<if test="module_code != null and module_code != ''">
+		AND
+		b.ModuleCode='${module_code}'
+		</if>
+ 		<if test="order_no != null and order_no != ''">
+		AND
+		a.order_no='${order_no}'
+		</if>	 
+	</select>	
+
+</mapper>

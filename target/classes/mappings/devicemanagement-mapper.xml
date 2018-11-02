@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.DevicemanagementMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<select id="findDevicePage" resultType="com.numberONe.entity.DeviceFormMap">
+		SELECT top(100000)* FROM device WHERE delState = 1
+		<if test="number != null and number != ''">
+			AND number like '%${number}%'
+		</if>
+		<if test="column != null">
+			order by ${column} ${sort}
+		</if>
+	</select>
+	<!-- 删除 -->
+	<update id="delete">
+		UPDATE device SET delState = 0 WHERE id = #{id}
+	</update>
+	<!-- 工序 -->
+	<select id="processName" resultType="String">
+		SELECT process_name FROM Base_Process
+	</select>
+	
+	<!-- 生产车间 -->
+	<select id="workshop" resultType="String">
+		SELECT info1 FROM system_basic_info WHERE s_type = '线别'
+	</select>
+	
+	<select id="seletype" resultType="String">
+		SELECT info1 FROM system_basic_info WHERE s_type = '设备类别'
+	</select>
+	
+	<select id="seldept" resultType="String">
+		SELECT info1 FROM  system_basic_info WHERE s_type='部门';
+	</select>
+</mapper>

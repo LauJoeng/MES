@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.DocumentMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<select id="findDocumentPage" resultType="com.numberONe.entity.DocumentFormMap">
+		SELECT top(100000)* FROM device_document WHERE 1=1
+		<if test="dnumber != null and dnumber != ''">
+		AND dnumber like '%${dnumber}%'
+		</if>
+		<if test="filetype != null and filetype != ''">
+		AND filetype = '${filetype}'
+		</if>
+		<if test="dname!= null and dname != ''">
+		AND dname like '%${dname}%'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<insert id="addDocEntity" parameterType="com.numberONe.entity.Document">
+		INSERT INTO device_document (
+			filename,
+			dnumber,
+			dname,
+			fileurl,
+			remark,
+			filetype
+		)
+		VALUES
+			(
+				#{filename},
+				#{dnumber},
+				#{dname},
+				#{fileurl},
+				#{remark},
+				#{filetype}
+			)
+	</insert>
+	
+	<select id="seltype" resultType="String">
+		SELECT info1 FROM  system_basic_info WHERE s_type='设备类型';
+	</select>
+	
+	<select id="seldept" resultType="String">
+		SELECT info1 FROM  system_basic_info WHERE s_type='部门';
+	</select>
+	
+	<select id="selectFileUrlById" parameterType="Integer" resultType="String">
+		SELECT fileurl FROM  device_document WHERE id=#{id};
+	</select>
+	
+</mapper>

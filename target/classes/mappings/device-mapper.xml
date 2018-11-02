@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.DeviceMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<select id="findDevicePage" resultType="com.numberONe.entity.DeviceFormMap">
+		SELECT top(100000)* FROM device WHERE 1=1
+		<if test="number != null and number != ''">
+		AND number like '%${number}%'
+		</if>
+		<if test="typeid != null and typeid != ''">
+		AND typeid = '${typeid}'
+		</if>
+		<if test=" userdept!= null and userdept != ''">
+		AND userdept = '${userdept}'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<update id="addFileUrl">
+		UPDATE device
+		SET fileurl = #{fileUrl}
+		WHERE
+			id = #{id};
+	</update>
+	
+	<select id="seltype" resultType="String">
+		SELECT info1 FROM  system_basic_info WHERE s_type='设备类型';
+	</select>
+	
+	<select id="seldept" resultType="String">
+		SELECT info1 FROM  system_basic_info WHERE s_type='部门';
+	</select>
+</mapper>

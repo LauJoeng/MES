@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.OperationDataMapper">
+
+	<select id="selectProcessName"  resultType="String">
+		SELECT process_name FROM Base_Process WHERE Status = 0
+	</select>
+	
+	<select id="selectDataPage" resultType="com.numberONe.entity.OperationDataFormMap">
+		SELECT *
+		FROM 
+			Process_Operational 
+		WHERE 1=1
+		<if test="begintime != null and begintime != ''">
+		AND optime &gt;= '${begintime}'
+		</if>
+		<if test="endtime != null and endtime != ''">
+		AND optime &lt;= '${endtime}'
+		</if>
+		AND process ='${process}'
+		<if test="op != null and op != ''">
+		AND	op = '${op}'
+		</if>
+	</select>
+	<select id="selectOpModuleData" resultType="com.numberONe.entity.OpModuleOperation">
+		select a.id,a.module_code,a.op ,c.china_name ,a.process, a.optime, a.step,
+		b.order_no,b.ordersendno
+		from Process_Operational a
+		left join list_order_module_code b on a.module_code=b.module_code
+		left join  Base_Userinfo c on a.op=c.username
+		 where 1=1
+		 <if test="op != null and op != ''">
+		AND a.op = '${op}'
+		</if>
+		<if test="module_code != null and module_code != ''">
+		AND a.module_code = '${module_code}'
+		</if>
+		<if test="begintime != null and begintime != ''">
+		AND a.optime &gt;= '${begintime}'
+		</if>
+		<if test="endtime != null and endtime != ''">
+		AND a.optime &lt;= '${endtime}'
+		</if>
+		<if test="order_no != null and order_no != ''">
+		AND b.order_no = '${order_no}'
+		</if>
+	</select>
+</mapper>

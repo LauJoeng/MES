@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.OrderProgressMapper">
+	
+<resultMap id="OrderProgressInfo" type="OrderProgress">  
+<!-- 		column:代表数据库字段名， property：声明的实体类里的属性。 column和property代表：实体类和数据库里面的字段进行匹配的，方便查询 -->
+		<result column="订单号" 		property="order_no"/>
+		<result column="组件条码" 		property="module_code"/>
+		<result column="状态" 		property="curStatus"/>	
+		<result column="分片" 		property="process_1_status"/>
+		<result column="拼接" 		property="process_2_status"/>
+		<result column="前道EL" 		property="process_3_status"/>
+		<result column="层压" 		property="process_4_status"/>
+		<result column="削边" 		property="process_5_status"/>		
+		<result column="中道EL" 		property="process_6_status"/>
+		<result column="装框" 		property="process_7_status"/>
+		<result column="清洁" 		property="process_8_status"/>
+		<result column="耐压测试" 		property="process_9_status"/>
+		<result column="IV测试" 		property="process_10_status"/>
+		<result column="后道EL" 		property="process_11_status"/>
+		<result column="FQC" 		property="process_12_status"/>
+		<result column="PKG" 		property="process_13_status"/>
+		<result column="入库" 		property="process_14_status"/>
+		
+		
+</resultMap>  
+
+<select id="getOrderProgressInfo" statementType="CALLABLE"   resultType="OrderProgress" resultMap="OrderProgressInfo">  
+      {
+       call order_progress(
+       			#{orderno,mode=IN,jdbcType=VARCHAR},
+       			#{module_code,mode=IN,jdbcType=VARCHAR}      			
+      	)
+      }  
+</select>
+
+<select id="selectProcessCy" resultType="com.numberONe.entity.ProcessCyFormMap">
+		SELECT
+			*
+		FROM
+			Process_Cy_data
+		WHERE 1=1
+		<if test="equipCode != null and equipCode != ''">
+		AND	EquipCode = '${equipCode}'
+		</if>
+		<!-- AND createtime BETWEEN '${begintime}' 
+		AND '${endtime}' -->
+		
+		AND createtime &gt;= '${begintime}'
+		
+		AND createtime &lt;= '${endtime}'
+		
+	</select>
+	<select id="selectProcessEL1" resultType="com.numberONe.entity.ProcessELFormMap">
+		select * from(SELECT order_no ,module_code,createtime from list_order_module_code )a
+LEFT JOIN Process_El1_data  b on a.module_code=b.module_code
+ where 1=1 
+		 <if test="order_no != null and order_no != ''">
+		and a.order_no='${order_no}'
+		 </if>
+ 		 
+ 		<if test="begintime != null and begintime != ''">
+		AND  a.createtime &gt;= '${begintime}'
+		</if>
+		<if test="endtime != null and endtime != ''">
+		AND  a.createtime &lt;= '${endtime}'
+		</if>
+	
+	</select>
+		<select id="selectProcessEL3" resultType="com.numberONe.entity.ProcessELFormMap">
+		select * from(SELECT order_no ,module_code,createtime from list_order_module_code )a
+LEFT JOIN Process_El3_data  b on a.module_code=b.module_code
+ where 1=1 
+		 <if test="order_no != null and order_no != ''">
+		and a.order_no='${order_no}'
+		 </if>
+ 		 
+ 		<if test="begintime != null and begintime != ''">
+		AND  a.createtime &gt;= '${begintime}'
+		</if>
+		<if test="endtime != null and endtime != ''">
+		AND  a.createtime &lt;= '${endtime}'
+		</if>
+	
+	</select>
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ <mapper namespace="com.numberONe.mapper.mapper2.ShipmentDataMapper">
+<select id="selectShipmentModule" resultType="com.numberONe.entity.ShipmentStatistics">
+		select IODate,compactno , Ceiling(ExchRate)ExchRate,
+ Ceiling(SUM( MainNum )) MainNum ,Ceiling(SUM(SubNum)) SubNum FROM (
+
+ select CONVERT(varchar(100), IODate, 23) IODate,dt.compactno compactno,ExchRate,MainNum,SubNum
+	from InOutBillDetTB dt left   JOIN  InOutBillHedTB ht 
+	on dt.IONo =ht.IONo 
+	
+where	1=1
+		<if test="begintime != null and begintime != ''">
+		AND ht.IODate &gt;= '${begintime}'
+		</if>
+		<if test="endtime != null and endtime != ''">
+		AND ht.IODate &lt;= '${endtime}'
+		</if>
+	<!--  ht.IODate  BETWEEN '2018-01-01' and '2018-05-25'  -->
+	 
+	 and IOKindID='SaleOut' 
+and dt.ItemId in (SELECT ItemId from ItemTB WHERE ItemParam='成品')
+)c GROUP BY compactno ,ExchRate,IODate
+		
+		
+		
+	</select> 
+	
+	<select id="selectShipmentBattery" resultType="com.numberONe.entity.ShipmentStatistics">
+		select IODate,compactno , Ceiling(ExchRate)ExchRate,
+ Ceiling(SUM( MainNum )) MainNum ,Ceiling(SUM(SubNum)) SubNum FROM (
+
+ select CONVERT(varchar(100), IODate, 23) IODate,dt.compactno compactno,ExchRate,MainNum,SubNum
+	from InOutBillDetTB dt left   JOIN  InOutBillHedTB ht 
+	on dt.IONo =ht.IONo 
+	
+where	1=1
+		<if test="begintime != null and begintime != ''">
+		AND ht.IODate &gt;= '${begintime}'
+		</if>
+		<if test="endtime != null and endtime != ''">
+		AND ht.IODate &lt;= '${endtime}'
+		</if>
+	<!--  ht.IODate  BETWEEN '2018-01-01' and '2018-05-25'  -->
+	 
+	 and IOKindID='SaleOut' 
+and dt.ItemId in (SELECT ItemId from ItemTB WHERE ItemParam='半成品')
+)c GROUP BY compactno ,ExchRate,IODate
+		
+		
+		
+	</select> 
+
+
+</mapper>
