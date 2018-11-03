@@ -1,4 +1,4 @@
-//yang:2018年11月1日  未完成,待编写
+
 var pageii = null;
 var grid = null;
 $(function() {
@@ -6,14 +6,12 @@ $(function() {
     $.ajax({
         type:"GET",
         url:"/inspect/updateWaitInspect.shtml",
+        async:true,
         success:function (data) {
             if (!data){
                 alert("更新点检信息失败");
             }
         },
-        error:function () {
-            alert("更新点检信息失败!");
-        }
     });
 
     loadData();
@@ -57,10 +55,11 @@ function  loadData() {
         l_column : [{
             colkey : "id",
             isSort:true,
-            name:"id"
+            name:"id",
+            width: '35px'
         }, {
             colkey : "dnumber",
-            name : "点检设备编号"
+            name : "点检设备编号",
         },{
             colkey : "inspectman",
             name : "计划点检人员",
@@ -68,13 +67,20 @@ function  loadData() {
             colkey : "dname",
             name : "点检设备名称"
         },{
+            colkey : "inspectinfo",
+            name : "点检项目",
+            width:'300px'
+        },{
+            colkey : "inspectrule",
+            name : "点检标准",
+            width:'300px'
+        },{
             colkey : "name",
             name : "计划名称"
         },{
             colkey : "cycle",
             name : "周期"
         }],
-        options:{data:{"state":1}},
         jsonUrl : rootPath + '/inspect/findWaitInspectByPage.shtml',
         checkbox : true,
         serNumber : true

@@ -218,6 +218,14 @@ public class DeviceInspectController extends BaseController {
 				if (arr[1].compareTo(BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle-1)))>0) {//如果这个周期剩余时间少于一天则查找下个周期的记录是否已经存在表中
 					List<DeviceWaitInspectFormMap> list = deviceWaitInspectMapper.selectByPlanIdAndCycle(planId, arr[0].intValue()+1);
 					if (list.size() <= 0) {//如果不存在则将记录插入表
+						String[] dnums = deviceInspectPlan.getStr("dnumber").split(",");
+						StringBuilder inspectInfoStr = new StringBuilder();
+						StringBuilder inspectruleStr = new StringBuilder();
+						for (String num: dnums){
+							DeviceInspectInfoFormMap info = deviceInspectMapper.findDeviceInspectInfoByDeviceNumber("%"+num+"%");
+							inspectInfoStr.append(info.getStr("inspectinfo"));
+							inspectruleStr.append(info.getStr("inspectrule"));
+						}
 						DeviceWaitInspectFormMap deviceWaitInspect = new DeviceWaitInspectFormMap();
 						deviceWaitInspect.put("inspectman",deviceInspectPlan.getStr("inspectman"));
 						deviceWaitInspect.put("dnumber",deviceInspectPlan.getStr("dnumber"));
@@ -226,6 +234,9 @@ public class DeviceInspectController extends BaseController {
 						deviceWaitInspect.put("cycle",arr[0].intValue()+1);
 						deviceWaitInspect.put("planid",deviceInspectPlan.getInt("id"));
 						deviceWaitInspect.put("state",0);
+						deviceWaitInspect.put("inspectinfo",inspectInfoStr.toString());
+						deviceWaitInspect.put("inspectrule",inspectruleStr.toString());
+//						deviceWaitInspectMapper.insertOneRecord(deviceWaitInspect);
 						deviceWaitInspectMapper.insertOneRecord(deviceWaitInspect);
 					}
 				}

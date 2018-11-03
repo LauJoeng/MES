@@ -31,4 +31,8 @@
 		ORDER BY
 			id DESC;	
 	</select>
+    <select id="findDeviceInspectInfoByDeviceNumber"
+            resultType="com.numberONe.entity.DeviceInspectInfoFormMap">
+		select * from device_inspectinfo where applydevice like #{dnumber}
+	</select>
 </mapper>
