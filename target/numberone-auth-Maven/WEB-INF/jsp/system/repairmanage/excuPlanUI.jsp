@@ -75,7 +75,7 @@ input{
 </head>
 <body>
  <form id="form" name="form" class="form-horizontal" method="post"
-		action="${ctx}/maintain/excuPlanEntity.shtml" style="height:900px;">	
+		action="${ctx}/maintain/excuPlanEntity.shtml" style="height:900px;">
 		<input type="hidden" class="form-control checkacc"
 		 name="repairPlanFormMap.id"	value="${repairPlan.id}"  id="id">
 	<div>

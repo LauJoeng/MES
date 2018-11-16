@@ -76,7 +76,7 @@ input{
 						    $("#uploadfile").fileinput({
 						    	language:"zh",   //设置语言
 						        uploadUrl: "${ctx}/document/upload.shtml", //上传的地址 
-						        allowedFileExtensions: ['doc','docx','png','pdf'],//接收的文件后缀 */
+								//allowedFileExtensions: ['doc','docx','png','pdf'],//接收的文件后缀 */
 						        uploadAsync: true, //默认异步上传
 						        showUpload: true, //是否显示上传按钮
 						        showRemove : true, //显示移除按钮

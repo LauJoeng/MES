@@ -35,7 +35,7 @@
 	</update>
 
 	<select id="selectByPlanIdAndCycle" resultType="com.numberONe.entity.DeviceWaitInspectFormMap">
-		select top(100000) * from device_wait_inspect where planid = #{planId} and cycle=#{cycle}
+		select top(100000) * from device_wait_inspect where planid = #{planId} and dnumber = #{dnumber} and cycle=#{cycle}
 	</select>
 	<select id="findDeviceWaitInspectPage" resultType="com.numberONe.entity.DeviceWaitInspectFormMap">
 		SELECT

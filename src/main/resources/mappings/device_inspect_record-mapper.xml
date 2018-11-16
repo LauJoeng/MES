@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.DeviceInspectRecordMapper">
+
+    <select id="findDeviceInspectRecordPage" resultType="com.numberONe.entity.DeviceInspectRecordFormMap">
+        SELECT
+        TOP (100000)*
+        FROM
+        device_inspect_record
+        <if test="starttime != null and starttime != ''">
+            AND begintime &gt;= '${starttime}'
+        </if>
+        <if test="endtime != null and endtime != ''">
+            AND stoptime &lt;= '${endtime}'
+        </if>
+        <if test="column!=null">
+            order by #{column} #{sort}
+        </if>
+    </select>
+</mapper>

@@ -3,14 +3,15 @@ package com.numberONe.controller.system;
 import javax.inject.Inject;
 
 import com.numberONe.entity.*;
-import com.numberONe.mapper.DeviceWaitInspectMapper;
+import com.numberONe.mapper.*;
+import com.numberONe.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.numberONe.mapper.DeviceInspectMapper;
 import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
 import com.numberONe.exception.SystemException;
@@ -19,7 +20,7 @@ import com.numberONe.util.Common;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -36,17 +37,28 @@ public class DeviceInspectController extends BaseController {
 	@Inject
 	private DeviceWaitInspectMapper deviceWaitInspectMapper;
 
+	@Inject
+	private DeviceMapper deviceMapper;
+
+	@Inject
+	private ConsumableMapper consumableMapper;
+
+	@Inject
+	private DevicePartMapper devicePartMapper;
+
+	@Inject
+	private DeviceConsumDetailMapper deviceConsumDetailMapper;
+
+	@Inject
+	private DevicePartReplaceMapper devicePartReplaceMapper;
+
+	@Inject
+	private DeviceInspectRecordMapper deviceInspectRecordMapper;
 	
 	@RequestMapping("inspectInfoList")
 	public String recordUI(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
 		return Common.BACKGROUND_PATH + "/system/deviceinspect/inspectInfoList";
-	}
-
-	@RequestMapping("execInspect")
-	public String execInspectUI(Model model) throws Exception {
-		model.addAttribute("res", findByRes());
-		return Common.BACKGROUND_PATH + "/system/deviceinspect/execInspect";
 	}
 
 	@ResponseBody
@@ -153,7 +165,6 @@ public class DeviceInspectController extends BaseController {
 		return "success";
 	}
 
-	
 	@RequestMapping("inspectPlan")
 	public String inspectPlanUI(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
@@ -171,6 +182,9 @@ public class DeviceInspectController extends BaseController {
         return pageView;
 	}
 
+
+
+	//返回待执行的点检项目
 	@ResponseBody
 	@RequestMapping("findWaitInspectByPage")
 	public PageView findWaitInspectByPage(String page,String pageSize,String column,String sort){
@@ -182,25 +196,72 @@ public class DeviceInspectController extends BaseController {
 		return pageView;
 	}
 
+	//执行点检项目
 	@ResponseBody
-	@RequestMapping("executeWaitInspect")
-	public boolean executeWaitInspect(){
-		String[] ids = getParaValues("ids");
+	@RequestMapping(value = "executeWaitInspect",method = RequestMethod.POST)
+	public String executeWaitInspect(DeviceRepairDetailList drdl,DeviceConsumDetailList dcdl){
 		try {
-			for (String id:ids){
-				DeviceWaitInspectFormMap deviceWaitInspectFormMap = getFormMap(DeviceWaitInspectFormMap.class);
-				deviceWaitInspectFormMap.put("id",id);
-				deviceWaitInspectFormMap.put("state",0);
-					deviceWaitInspectMapper.updateRecord(deviceWaitInspectFormMap);
+			DeviceInspectRecordFormMap deviceInspectRecordFormMap = getFormMap(DeviceInspectRecordFormMap.class);
+			System.out.println(Arrays.toString(deviceInspectRecordFormMap.getAttrValues()));
+			String inspectman=deviceInspectRecordFormMap.getStr("inspectman");
+			String date = DateUtil.formatDate(new Date(),"yyyyMMddHHmmss");
+			String maintainid= "DJ-"+date;
+			deviceInspectRecordFormMap.put("inspectId",maintainid);
+			deviceInspectRecordMapper.addEntity(deviceInspectRecordFormMap);//更新点检记录
+			DeviceWaitInspectFormMap deviceWaitInspectFormMap = new DeviceWaitInspectFormMap();
+			deviceWaitInspectFormMap.put("id", Integer.valueOf(deviceInspectRecordFormMap.getStr("waitInspectPlanId")));
+			deviceWaitInspectFormMap.put("state",1);//更新待点检表
+			deviceWaitInspectMapper.updateRecord(deviceWaitInspectFormMap);
+//			List<DeviceWaitInspect>waitInspects = deviceWaitInspectMapper.findByAttribute("id",deviceInspectRecordFormMap.getInt("waitInspectPlanId").toString(),DeviceWaitInspect.class);
+			if (dcdl.getCnamelist()!=null) {
+				//消耗品使用数据的采集和记录
+				List<String> cnamelist=dcdl.getCnamelist();
+				List<String> unitlist=dcdl.getUnitlist();
+				List<String> pricelist=dcdl.getPricelist();
+				List<String> cqtylist=dcdl.getCqtylist();
+				for (int i = 0; i < cnamelist.size(); i++) {
+					DeviceConsumDetailFormMap dc=new DeviceConsumDetailFormMap();
+					dc.put("cid", consumableMapper.findIdByCname(cnamelist.get(i)));
+					dc.put("unit",unitlist.get(i));
+					dc.put("cname", cnamelist.get(i));
+					dc.put("price", pricelist.get(i));
+					dc.put("qty", cqtylist.get(i));
+					dc.put("rpnumber",maintainid );
+					dc.put("op",inspectman);
+					dc.put("ctotal", Integer.parseInt(pricelist.get(i))*Integer.parseInt(cqtylist.get(i)));
+					deviceConsumDetailMapper.addEntity(dc);
+				}
+			}
+			if (drdl.getFnolist()!=null) {
+				//配件更换数据的采集和记录
+				List<String> fnolist=drdl.getFnolist();
+				List<String> fnamelist=drdl.getFnamelist();
+				List<String> fpricelist=drdl.getFpricelist();
+				List<String> fqtylist=drdl.getFqtylist();
+				for (int i = 0; i < fnolist.size(); i++) {
+					DeviceRepairDetailFormMap df=new DeviceRepairDetailFormMap();
+					df.put("fid", devicePartMapper.findIdByfno(fnolist.get(i)));
+					df.put("fno",fnolist.get(i));
+					df.put("fname", fnamelist.get(i));
+					df.put("fprice", fpricelist.get(i));
+					df.put("qty", fqtylist.get(i));
+					df.put("rpnumber", maintainid);
+					df.put("op",inspectman);
+					df.put("ftotal", Integer.parseInt(fpricelist.get(i))*Integer.parseInt(fqtylist.get(i)));
+					devicePartReplaceMapper.addEntity(df);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			throw new SystemException("添加计划异常");
 		}
-		return true;
+		return "success";
 	}
 
-	//更新待点检信息
+	/*
+	根据点检计划来更新需要点检的项目，即根据device_inspectplan中的数据判断是否应该在待执行点检表中添加记录
+	每次进入执行点检页面之前都会执行这个方法，这样就能在每个点检时间到来前把记录添加到待执行的表中
+	 */
 	@ResponseBody
 	@RequestMapping("updateWaitInspect")
 	public boolean updateWaitInspect(){
@@ -212,32 +273,33 @@ public class DeviceInspectController extends BaseController {
 				int inspectCycle = deviceInspectPlan.getInt("inspectcycle");//点检周期时间长(天)
 				BigInteger planTime = BigInteger.valueOf(deviceInspectPlan.getDate("plantime").getTime());//计划开始时间
 				BigInteger currentTime = BigInteger.valueOf(System.currentTimeMillis());
-				BigInteger[] arr =  currentTime.subtract(planTime).divideAndRemainder(BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle)));
+				BigInteger[] arr =  currentTime.subtract(planTime).divideAndRemainder(BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle)));//数组第一个值是商，第二个是余数
 				//本周期已过去的时间=(currentTime - planTime)%cycleMillis
 				System.out.println(arr[0]+"---"+arr[1]+"---"+currentTime+"---"+planTime+"---"+BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle)));
 				if (arr[1].compareTo(BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle-1)))>0) {//如果这个周期剩余时间少于一天则查找下个周期的记录是否已经存在表中
-					List<DeviceWaitInspectFormMap> list = deviceWaitInspectMapper.selectByPlanIdAndCycle(planId, arr[0].intValue()+1);
-					if (list.size() <= 0) {//如果不存在则将记录插入表
-						String[] dnums = deviceInspectPlan.getStr("dnumber").split(",");
-						StringBuilder inspectInfoStr = new StringBuilder();
-						StringBuilder inspectruleStr = new StringBuilder();
-						for (String num: dnums){
-							DeviceInspectInfoFormMap info = deviceInspectMapper.findDeviceInspectInfoByDeviceNumber("%"+num+"%");
-							inspectInfoStr.append(info.getStr("inspectinfo"));
-							inspectruleStr.append(info.getStr("inspectrule"));
+					String[] dnums = deviceInspectPlan.getStr("dnumber").split(",");//一个计划里有多个设备码，分开为多个记录
+					for (String dnum:dnums){
+						List<DeviceWaitInspectFormMap> list = deviceWaitInspectMapper.selectByPlanIdAndCycle(planId,dnum ,arr[0].intValue()+1);
+						if (list.size() <= 0) {//如果不存在则将记录插入表中
+							DeviceInspectInfoFormMap info = deviceInspectMapper.findDeviceInspectInfoByDeviceNumber("%"+dnum+"%");
+							DeviceFormMap deviceFormMap = deviceMapper.findbyFrist("number",dnum,DeviceFormMap.class);
+							DeviceWaitInspectFormMap deviceWaitInspect = new DeviceWaitInspectFormMap();
+							deviceWaitInspect.put("inspectinfo",info==null ? " " : info.getStr("inspectinfo"));//点检信息可能为空，下同
+							deviceWaitInspect.put("inspectrule",info==null ? " " : info.getStr("inspectrule"));
+							System.out.println(Arrays.toString(deviceFormMap.getAttrNames()));
+							deviceWaitInspect.put("dtype",deviceFormMap.getStr("typeid"));
+							deviceWaitInspect.put("standard",deviceFormMap.getStr("standard"));
+							deviceWaitInspect.put("userdept",deviceFormMap.getStr("userdept"));
+							deviceWaitInspect.put("inspectman",deviceInspectPlan.getStr("inspectman"));
+							deviceWaitInspect.put("dnumber",dnum);
+							deviceWaitInspect.put("dname",deviceFormMap.getStr("dname"));
+							deviceWaitInspect.put("name",deviceInspectPlan.getStr("name"));
+							deviceWaitInspect.put("cycle",arr[0].intValue()+1);
+							deviceWaitInspect.put("planid",deviceInspectPlan.getInt("id"));
+							deviceWaitInspect.put("state",0);//列表之显示状态为0的记录，0代表未执行，1代表已经执行
+//							deviceWaitInspectMapper.insertOneRecord(deviceWaitInspect);
+							deviceWaitInspectMapper.addEntity(deviceWaitInspect);
 						}
-						DeviceWaitInspectFormMap deviceWaitInspect = new DeviceWaitInspectFormMap();
-						deviceWaitInspect.put("inspectman",deviceInspectPlan.getStr("inspectman"));
-						deviceWaitInspect.put("dnumber",deviceInspectPlan.getStr("dnumber"));
-						deviceWaitInspect.put("dname",deviceInspectPlan.getStr("dname"));
-						deviceWaitInspect.put("name",deviceInspectPlan.getStr("name"));
-						deviceWaitInspect.put("cycle",arr[0].intValue()+1);
-						deviceWaitInspect.put("planid",deviceInspectPlan.getInt("id"));
-						deviceWaitInspect.put("state",0);
-						deviceWaitInspect.put("inspectinfo",inspectInfoStr.toString());
-						deviceWaitInspect.put("inspectrule",inspectruleStr.toString());
-//						deviceWaitInspectMapper.insertOneRecord(deviceWaitInspect);
-						deviceWaitInspectMapper.insertOneRecord(deviceWaitInspect);
 					}
 				}
 			}
@@ -246,5 +308,50 @@ public class DeviceInspectController extends BaseController {
 			return false;
 		}
 		return true;
+	}
+
+	@ResponseBody
+	@RequestMapping("findInspectRecordByPage")
+	public PageView findInspectRecordByPage(String page,String pageSize,String column,String sort){
+		DeviceInspectRecordFormMap deviceInspectRecordFormMap = getFormMap(DeviceInspectRecordFormMap.class);
+		System.out.println(Arrays.toString(deviceInspectRecordFormMap.getAttrValues()));
+		deviceInspectRecordFormMap=toFormMap(deviceInspectRecordFormMap, page, pageSize,deviceInspectRecordFormMap.getStr("orderby"));
+		deviceInspectRecordFormMap.put("column", column);
+		deviceInspectRecordFormMap.put("sort", sort);
+		pageView.setRecords(deviceInspectRecordMapper.findDeviceInspectRecordPage(deviceInspectRecordFormMap));
+		return pageView;
+	}
+
+	@ResponseBody
+	@RequestMapping("deleteInspectRecordEntity")
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	public String deleteInspectRecordEntity() throws Exception {
+		String[] ids = getParaValues("ids");
+		for (String id : ids) {
+			deviceInspectRecordMapper.deleteByAttribute("id", id, DeviceInspectRecordFormMap.class);
+		}
+		return "success";
+	}
+
+	@RequestMapping("inspectRecordListUI")
+	public String deviceInspectRecordListUI(Model model){
+		String id = getPara("id");
+		model.addAttribute("res", findByRes());
+		return Common.BACKGROUND_PATH + "/system/deviceinspect/inspectRecordList";
+	}
+
+	@RequestMapping("excuPlanUI")
+	public String excutePlanUI(Model model){
+		String id = getPara("id");
+		if(Common.isNotEmpty(id)){
+			model.addAttribute("waitInspectPlan", deviceWaitInspectMapper.findbyFrist("id", id, DeviceWaitInspectFormMap.class));
+		}
+		return Common.BACKGROUND_PATH + "/system/deviceinspect/excuPlanUI";
+	}
+
+	@RequestMapping("execInspectUI")
+	public String execInspectUI(Model model) throws Exception {
+		model.addAttribute("res", findByRes());
+		return Common.BACKGROUND_PATH + "/system/deviceinspect/execInspect";
 	}
 }

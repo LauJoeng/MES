@@ -87,7 +87,7 @@ public class DocumentManageController extends BaseController {
         String dname = request.getParameter("dname");
         String remark=request.getParameter("remark");
         String filetype=request.getParameter("filetype");
-        FTPUtil ftp = new FTPUtil("192.168.1.220",21,"ftp","Blt@123");
+        FTPUtil ftp = new FTPUtil("192.168.241.1",21,"anonymous","111111");
         String name=new String(file.getOriginalFilename().getBytes("GBK"),"iso-8859-1");
         String url="/EMSFILE/DevcieDocument/"+time+"/";
         ftp.upLoadFile(file,url,url+name);
@@ -109,11 +109,10 @@ public class DocumentManageController extends BaseController {
      *返回文件流，让浏览器弹出文件下载提示框进行下载
      */
     @ResponseBody
-    @RequestMapping(value = "/download",method = RequestMethod.POST)
-    public boolean filedownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/download")
+    public String filedownload(@RequestParam("fileName")String fileName,@RequestParam("id")Integer fileId,HttpServletRequest request, HttpServletResponse response) throws IOException {
         FTPClient ftpClient = new FTPClient();
-        String fileName=request.getParameter("fileName");
-        Integer  fileId = Integer.parseInt(request.getParameter("id"));
+        System.out.println(fileName + ","+fileId);
         String fileurl=documentMapper.selectFileUrlById(fileId);
         try {
             int reply;
@@ -122,7 +121,7 @@ public class DocumentManageController extends BaseController {
             reply = ftpClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)){
                 ftpClient.disconnect();
-                return false;
+                return "连接服务器失败,请关闭本窗口";
             }
             ftpClient.changeWorkingDirectory(fileurl);
             FTPFile[] fs = ftpClient.listFiles(fileName);
@@ -136,14 +135,14 @@ public class DocumentManageController extends BaseController {
                 os.close();
                 System.out.println("文件找到");
             }else{
-                System.out.println("未找到文件");
-                return false;
+                System.out.println();
+                return "未找到文件,请关闭本窗口";
             }
             ftpClient.logout();
-            return true;
+            return "";
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return "下载出错,请关闭本窗口";
         }finally {
             if (ftpClient.isConnected()){
                 try{

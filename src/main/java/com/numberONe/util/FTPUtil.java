@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -65,7 +66,8 @@ public class FTPUtil {
     	OutputStream os=null;
     	InputStream is=null;
         try {
-        	ftp.makeDirectory(pathname);
+            ftp.enterLocalPassiveMode();
+            boolean b1 = ftp.makeDirectory(pathname);
             os = ftp.storeFileStream(fileName);
             is =file.getInputStream();
             byte[] b = new byte[1024];
@@ -73,6 +75,7 @@ public class FTPUtil {
             while ((len = is.read(b)) != -1) {
                 os.write(b,0,len);
             }
+            System.out.println("写完成");
             os.flush();
             os.close();
             is.close();

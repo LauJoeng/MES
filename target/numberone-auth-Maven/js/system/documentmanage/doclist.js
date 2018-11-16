@@ -98,8 +98,8 @@ function downLoadDoc() {
 	//由于ajax请求不能返回流，无法弹出文件选择框，所以在页面放了一个隐藏表单，通过表单请求的方式来得到文件流下载
 	$("#fileNameInput").attr("value",fileName);
 	$("#idInput").attr("value",cbox[0]);
-	$("#downloadform").submit();
-	// window.location =
+	// $("#downloadform").submit();
+    window.open(rootPath+"/document/download.shtml?fileName="+fileName+"&id="+cbox[0]);
 }
 
 
