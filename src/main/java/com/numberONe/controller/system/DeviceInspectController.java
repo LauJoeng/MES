@@ -202,7 +202,12 @@ public class DeviceInspectController extends BaseController {
 	public String executeWaitInspect(DeviceRepairDetailList drdl,DeviceConsumDetailList dcdl){
 		try {
 			DeviceInspectRecordFormMap deviceInspectRecordFormMap = getFormMap(DeviceInspectRecordFormMap.class);
-			System.out.println(Arrays.toString(deviceInspectRecordFormMap.getAttrValues()));
+			System.out.println(Arrays.toString(deviceInspectRecordFormMap.getAttrValues())+deviceInspectRecordFormMap.getStr("waitInspectPlanId"));
+			DeviceWaitInspectFormMap deviceWaitInspectFormMap1 = deviceWaitInspectMapper.findbyFrist("id",deviceInspectRecordFormMap.getStr("waitInspectPlanId"),DeviceWaitInspectFormMap.class);
+			System.out.println(deviceWaitInspectFormMap1);
+			DeviceInspectPlanFormMap deviceInspectPlanFormMap = deviceInspectMapper.findbyFrist("id",deviceWaitInspectFormMap1.getInt("planid").toString(),DeviceInspectPlanFormMap.class);
+			deviceInspectPlanFormMap.set("lasttime",new Date());
+			deviceInspectMapper.updateEntity(deviceInspectPlanFormMap);
 			String inspectman=deviceInspectRecordFormMap.getStr("inspectman");
 			String date = DateUtil.formatDate(new Date(),"yyyyMMddHHmmss");
 			String maintainid= "DJ-"+date;
@@ -275,7 +280,7 @@ public class DeviceInspectController extends BaseController {
 				BigInteger currentTime = BigInteger.valueOf(System.currentTimeMillis());
 				BigInteger[] arr =  currentTime.subtract(planTime).divideAndRemainder(BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle)));//数组第一个值是商，第二个是余数
 				//本周期已过去的时间=(currentTime - planTime)%cycleMillis
-				System.out.println(arr[0]+"---"+arr[1]+"---"+currentTime+"---"+planTime+"---"+BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle)));
+				System.out.println(arr[0]+"---"+arr[1]+"---"+currentTime+"---"+planTime+"---"+BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle))+"----"+BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle-1)));
 				if (arr[1].compareTo(BigInteger.valueOf(86400000).multiply(BigInteger.valueOf(inspectCycle-1)))>0) {//如果这个周期剩余时间少于一天则查找下个周期的记录是否已经存在表中
 					String[] dnums = deviceInspectPlan.getStr("dnumber").split(",");//一个计划里有多个设备码，分开为多个记录
 					for (String dnum:dnums){
@@ -345,6 +350,7 @@ public class DeviceInspectController extends BaseController {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
 			model.addAttribute("waitInspectPlan", deviceWaitInspectMapper.findbyFrist("id", id, DeviceWaitInspectFormMap.class));
+			model.addAttribute("planId",id);
 		}
 		return Common.BACKGROUND_PATH + "/system/deviceinspect/excuPlanUI";
 	}

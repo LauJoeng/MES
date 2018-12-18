@@ -15,4 +15,7 @@ public interface DeviceInspectMapper extends BaseMapper{
 	public String findLastCode();
 	//点检计划列表
 	public List<DeviceInspectPlanFormMap> findDeviceInspectPlanPage(DeviceInspectPlanFormMap deviceInspectPlanFormMap);
+
+
+	void updateEntity(DeviceInspectPlanFormMap deviceInspectPlanFormMap);
 }

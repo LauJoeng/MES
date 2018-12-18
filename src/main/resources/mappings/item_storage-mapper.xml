@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.mapper2.ItemStorageMapper">
+
+
+	<select id="findAll" resultType="com.numberONe.entity.ItemStorageTBFormMap">
+		  select * from ItemStorageTB
+	</select>
+</mapper>

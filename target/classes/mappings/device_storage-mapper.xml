@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.mapper2.DeviceStorageMapper">
+
+	<!-- 2018-11-25 -->
+	<resultMap type="ItemStorage" id="itemStorageSelectResult">
+		<result property="itemId" column="itemId"/>
+		<result property="itemBatch" column="itemBatch"/>
+		<result property="proType" column="proType"/>
+		<result property="luHao" column="luHao"/>
+		<result property="numIs" column="numIs"/>
+		<result property="itemPrice" column="itemPrice"/>
+		<result property="itemName" column="itemName"/>
+		<result property="itemUnit" column="itemUnit"/>
+		<result property="itemSpc" column="itemSpc"/>
+		<result property="prvName" column="prvName"/>
+		<result property="psName" column="psName"/>
+		<result property="wareName" column="wareName"/>
+	</resultMap>
+
+	<select id="itemStorageSelect" resultMap="itemStorageSelectResult">
+		select top (#{pageSize}) * from(
+		select row_number() over (order by a.AutoId asc) as rownumber ,a.*,b.ItemName,b.ItemUnit,ISNULL(b.ItemSpc,'')ItemSpc ,ISNULL(e.PrvName,'')PrvName,d.psName ,c.wareName
+		from ItemStorageTB a
+		LEFT JOIN ItemTB b on a.ItemId=b.ItemID
+		left join WareHouseListTB c on a.wareid=c.wareid
+		left join PStateTB d on a.PState=d.PsId
+		left join ProviderTB e on a.packing=e.PrvId
+		<where>
+			and a.wareid='09'
+			<if test="numIs != null and numIs != '' and numIs !='0'.toString() ">
+				and a.NumIs &gt;0
+			</if>
+			<if test=" numIs =='0'.toString() ">
+				and a.NumIs =0
+			</if>
+			<if test="pState != null and pState != '' and pState != '1'.toString()  ">
+				and a.PState='${pState}'
+			</if>
+			<if test="pState == '1'.toString()  ">
+				and a.PState=''
+			</if>
+			<if test="itemid != null and itemid != ''   ">
+				and a.itemid like '%${itemid}%'
+			</if>
+
+			<if test="itemBatch != null and itemBatch != ''   ">
+				and a.itemBatch like '%${itemBatch}%'
+			</if>
+			<if test="provID != null and provID != ''   ">
+				and (e.prvID like '%${provID}%' or e.PrvName like '%${provID}%')
+			</if>
+
+			<if test="luHao != null and luHao != ''   ">
+				and a.luHao like '%${luHao}%'
+			</if>
+		</where>
+		) temp where rownumber>((#{pageIndex}-1) * #{pageSize})
+	</select>
+
+	<select id="selectCount" resultType="int">
+		select count(AutoId) from ItemStorageTB where wareid = 9;
+	</select>
+	
+</mapper>

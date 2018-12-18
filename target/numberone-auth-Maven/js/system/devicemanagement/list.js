@@ -2,7 +2,6 @@ var pageii = null;
 var grid = null;
 $(function() {
 	grid = lyGrid({
-		pagId : 'paging',
 		l_column : [{
 			colkey : "dname",
 			isSort:true,

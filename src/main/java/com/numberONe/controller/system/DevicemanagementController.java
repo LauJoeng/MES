@@ -2,23 +2,24 @@ package com.numberONe.controller.system;
 
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.numberONe.entity.*;
+import com.numberONe.mapper.mapper2.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.numberONe.mapper.DevicemanagementMapper;
 import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
-import com.numberONe.entity.DeviceFormMap;
 import com.numberONe.plugin.PageView;
 import com.numberONe.util.Common;
 import com.numberONe.util.JsonUtils;
@@ -35,6 +36,24 @@ public class DevicemanagementController extends BaseController {
 
 	@Inject
 	private DevicemanagementMapper deviceMapper;
+
+	@Autowired
+	private DeviceStorageMapper deviceStorageMapper;
+
+	@Autowired
+	private ItemStorageMapper itemStorageMapper;
+
+	@Autowired
+	private ItemMapper itemMapper;
+
+	@Autowired
+	private ProviderMapper providerMapper;
+
+	@Autowired
+	private PStateMapper pStateMapper;
+
+	@Autowired
+	private WareHouseListMapper wareHouseListMapper;
 	
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -153,5 +172,32 @@ public class DevicemanagementController extends BaseController {
 	    map.put("category", category);//设备类别（生产或非生产）
 	    map.put("seldept", seldept);//部门
  		return map;
+	}
+
+	@RequestMapping("deviceStorageListUI")
+	public String deviceStorageListUI(Model model){
+		model.addAttribute("res", findByRes());
+		return Common.BACKGROUND_PATH + "/system/devicemanagement/deviceStorageList";
+	}
+
+	//2018.11.30
+	@ResponseBody
+	@RequestMapping("findDeviceStorageList")
+	public PageView findDeviceStorageList(String pageNow, String pageSize,String column,String sort){
+		PageView p = getPageView(pageNow,pageSize,column);
+//		Map<String,String>params = new HashMap<>();
+//		params.put("pageSize",pageSize);
+//		params.put("numIs",getPara("numIs"));
+//		params.put("pState",getPara("pState"));
+//		params.put("itemBatch",getPara("itemBatch"));
+//		params.put("provID",getPara("provID"));
+//		params.put("wareHouse",getPara("wareHouse"));
+//		params.put("luHao",getPara("luHao"));
+//		p.setRecords(deviceStorageMapper.itemStorageSelect(params, p.getPageSize(), p.getPageNow()));
+		List<ItemStorage> itemStorageList = deviceStorageMapper.itemStorageSelect(p.getPageSize(), p.getPageNow(), getPara("numIs"), getPara("itemid"), getPara("pState"), getPara("itemBatch"), getPara("provId"), getPara("wareHouse"), getPara("luHao"));
+		p.setRecords(itemStorageList);
+		Integer pCount = deviceStorageMapper.selectCount();
+		p.setPageCount(pCount%p.getPageSize()==0 ? pCount/p.getPageSize() : pCount/p.getPageSize()+1);
+		return pageView;
 	}
 }
