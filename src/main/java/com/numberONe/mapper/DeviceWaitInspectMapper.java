@@ -8,10 +8,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface DeviceWaitInspectMapper extends BaseMapper {
-    public List<DeviceWaitInspectFormMap>selectByPlanIdAndCycle(@Param("planId") Integer planId, @Param("dnumber") String dnumber,@Param("cycle") Integer cycle);
+    public List<DeviceWaitInspectFormMap>selectByPlanIdAndCycle(@Param("planId") Integer planId, @Param("cycle") Integer cycle);
     public void insertOneRecord(DeviceWaitInspectFormMap deviceWaitInspect);
 
     List<DeviceWaitInspectFormMap> findDeviceWaitInspectPage(DeviceWaitInspectFormMap deviceWaitInspectFormMap);
+
+    List<DeviceWaitInspectFormMap>findDeviceInspectRecord(DeviceWaitInspectFormMap deviceWaitInspectFormMap);
 
     void updateRecord(DeviceWaitInspectFormMap deviceWaitInspectFormMap);
 }

@@ -8,12 +8,15 @@
         TOP (100000)*
         FROM
         device_inspect_record
-        <if test="starttime != null and starttime != ''">
-            AND begintime &gt;= '${starttime}'
-        </if>
-        <if test="endtime != null and endtime != ''">
-            AND stoptime &lt;= '${endtime}'
-        </if>
+        <where>
+            <if test="starttime != null and starttime != ''">
+                AND starttime >= '${starttime}'
+            </if>
+            <if test="endtime != null and endtime != ''">
+                AND endtime &lt;= '${endtime}'
+            </if>
+
+        </where>
         <if test="column!=null">
             order by #{column} #{sort}
         </if>

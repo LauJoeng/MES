@@ -3,48 +3,76 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.numberONe.mapper.DeviceWaitInspectMapper">
 	<insert id="insertOneRecord" parameterType="com.numberONe.entity.DeviceWaitInspectFormMap">
-		insert into device_wait_inspect(inspectman,dnumber,dname,name,cycle,planid,state,inspectinfo,inspectrule)
-		 values(#{inspectman},#{dnumber},#{dname},#{name},#{cycle},#{planid},#{state},#{inspectinfo},#{inspectrule})
+		insert into device_wait_inspect(inspectman,dnumber,dname,name,cycle,planid,executed,inspectinfo,inspectrule)
+		 values(#{inspectman},#{dnumber},#{dname},#{name},#{cycle},#{planid},#{executed},#{inspectinfo},#{inspectrule})
 	</insert>
 	<update id="updateRecord">
 		update device_wait_inspect
 		<set>
 			<if test="inspectman!=null">
-				inspectman=#{inspectman}
+				inspectman=#{inspectman},
 			</if>
 			<if test="dnumber!=null">
-				dnumber=#{dumber}
+				dnumber=#{dumber},
 			</if>
 			<if test="dname!=null">
-				dname=#{dname}
+				dname=#{dname},
 			</if>
 			<if test="name!=null">
-				name=#{name}
+				name=#{name},
 			</if>
 			<if test="cycle!=null">
-				cycle=#{cycle}
+				cycle=#{cycle},
 			</if>
 			<if test="planid!=null">
-				planid=#{planid}
+				planid=#{planid},
 			</if>
-			<if test="state!=null">
-				state=#{state}
+			<if test="executed!=null">
+				executed=#{executed},
+			</if>
+			<if test="starttime!=null">
+				starttime = #{starttime},
+			</if>
+			<if test="endtime!=null">
+				endtime = #{endtime},/*xml文件使用小于号冲突，用 &lt; 代替*/
+			</if>
+			<if test="inspectfee!=null">
+				inspectfee = #{inspectfee},
+			</if>
+			<if test="inspectprocess!=null">
+				inspectprocess = #{inspectprocess},
+			</if>
+			<if test="inspectid!=null">
+				inspectid = #{inspectid}
 			</if>
 		</set>
 		where id = #{id}
 	</update>
 
 	<select id="selectByPlanIdAndCycle" resultType="com.numberONe.entity.DeviceWaitInspectFormMap">
-		select top(100000) * from device_wait_inspect where planid = #{planId} and dnumber = #{dnumber} and cycle=#{cycle}
+		select top(100000) * from device_wait_inspect where planid = #{planId} and cycle=#{cycle}
 	</select>
 	<select id="findDeviceWaitInspectPage" resultType="com.numberONe.entity.DeviceWaitInspectFormMap">
 		SELECT
 		TOP (100000)*
 		FROM
 		device_wait_inspect
-		where state = 0
+		where executed = 0
 		<if test="column!=null">
 			order by #{column} #{sort}
 		</if>
+	</select>
+	<select id="findDeviceInspectRecord" resultType="com.numberONe.entity.DeviceWaitInspectFormMap">
+		SELECT
+		TOP (100000)*
+		FROM
+		device_wait_inspect
+		where executed = 1 and 1=1
+        <if test="starttime!=null">
+            and starttime >= '${starttime}'
+        </if>
+        <if test="endtime!=null">
+            and endtime &lt;= '${endtime}'
+        </if>
 	</select>
 </mapper>

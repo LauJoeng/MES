@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.ModuleGrossMarginUpdateMapper">
+
+	<select id="selectPrice" resultType="String">
+
+	select price from materialPriceTB
+	where ItemId='${itemId}'
+		
+	</select>
+
+	<select id="selectByExchRateInfor" resultType="com.numberONe.entity.ModuleGrossMargin"> 
+<!--  <select id="selectByExchRateInfor" resultMap="selectByExchRateInfor"> -->
+	select scrappage, water_electricity,cost_labor,foreign_currency_prices,
+	foreign_currency_rate,commission_rate,premium_rate,basic_commission_premium ,royalty_rate
+	 from MaterialExchRateValueTB
+	where ExchRate='${exchRate}'
+		
+	</select>
+	<insert id="insertModuleGrossMargin">
+		 insert into MaterialExchRateValueTB  
+	    (exchRate,scrappage,royalty_rate,water_electricity,cost_labor,foreign_currency_prices,foreign_currency_rate,commission_rate,premium_rate,basic_commission_premium)
+	     values('${exchRate}','${scrappage}','${royalty_rate}','${water_electricity}','${cost_labor}','${foreign_currency_prices}','${foreign_currency_rate}','${commission_rate}','${premium_rate}','${basic_commission_premium}') 
+		
+	
+	</insert>
+	<update id="updateModuleGrossMargin">
+		update MaterialExchRateValueTB set scrappage='${scrappage}', royalty_rate='${royalty_rate}', water_electricity='${water_electricity}' , cost_labor='${cost_labor}' , foreign_currency_prices='${foreign_currency_prices}' , foreign_currency_rate='${foreign_currency_rate}', commission_rate='${commission_rate}'  , premium_rate='${premium_rate}', basic_commission_premium='${basic_commission_premium}' where ExchRate='${exchRate}'  
+		
+	</update>
+	
+	<insert id="insertMatertialBasicInfor"  >  
+
+
+	    insert into materialPriceTB  
+	    (itemId,Price)
+	    values('${itemId}','${taxPrice}') 
+
+	  
+	</insert>
+	<update id="updateMatertialBasicInfor">
+		    update materialPriceTB set itemId='${itemId}', Price='${taxPrice}' where itemId='${itemId}'  
+	</update>
+
+	<insert id="insertSumModuleGrossMarginHis"  keyProperty="id" useGeneratedKeys="true" parameterType="com.numberONe.entity.SumModuleGrossMarginHis">  
+
+
+	    insert into SumModuleGrossMarginHis  
+	    (order_no  ,sum_orderNum_exchRate_margin  ,sum_orderNum_exchRate_unitPrice ,sum_orderNum_exchRate ,Total_gross_margin,average_gross_profit  )
+	    values('${order_no}','${sum_orderNum_exchRate_margin}',${sum_orderNum_exchRate_unitPrice},${sum_orderNum_exchRate},${total_gross_margin},${average_gross_profit}) 
+
+	  
+	</insert>
+	
+
+	
+	<insert id="insertModuleGrossMarginHis" parameterType="com.numberONe.entity.ModuleGrossMarginHis">  
+
+
+	    insert into ModuleGrossMarginHis  
+	    (id, order_no, itemName, itemID, orderNum, exchRate, scrappage, royalty_rate, water_electricity, cost_labor, foreign_currency_prices, foreign_currency_rate, commission_rate, premium_rate, basic_commission_premium, sea, inland, foreign_out, orderNum_exchRate_margin, orderNum_exchRate_unitPrice, orderNum_exchRate, premium, commission, unitPrice, royalty, gross_profit_margin, no_cost_silicon, cost_silicon)
+	    values('${	id}','${ order_no}','${ itemName}','${ itemID}','${ orderNum}','${ exchRate}','${ scrappage}','${ royalty_rate}','${ water_electricity}','${ cost_labor}','${ foreign_currency_prices}','${ foreign_currency_rate}','${ commission_rate}','${ premium_rate}','${ basic_commission_premium}','${ sea}','${ inland}','${ foreign}','${ orderNum_exchRate_margin}','${ orderNum_exchRate_unitPrice}','${ orderNum_exchRate}','${ premium}','${ commission}','${ unitPrice}','${ royalty}','${ gross_profit_margin}','${ no_cost_silicon}','${ cost_silicon}') 
+
+	  
+	</insert>
+	
+	<insert id="inserttMatertialBasicInforHis" parameterType="com.numberONe.entity.MatertialBasicInforHis">  
+
+
+	    insert into MatertialBasicInforHis  
+	    (id,itemId,dosage,wasteRate,reqNum,itemName	,itemSpc,itemUnit,itemParam	,taxPrice,module_itemId)
+	    values('${id}','${itemId}','${dosage}','${wasteRate}','${reqNum}','${itemName	}','${itemSpc}','${itemUnit}','${itemParam	}','${taxPrice}','${module_itemId}')
+	  
+	</insert> 
+</mapper>

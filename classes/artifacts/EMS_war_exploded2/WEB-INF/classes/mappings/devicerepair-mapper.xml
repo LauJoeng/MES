@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.DevicerepairMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<select id="findDevicePage" resultType="com.numberONe.entity.DeviceRepairFormMap">
+		SELECT
+		top(100000)*
+		FROM
+		device_repair
+		WHERE delState = 1
+		<if test="dnumber != null and dnumber != ''">
+		AND dnumber like '%${dnumber}%'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+	
+
+	<!-- 1.resultType="String"返回值类型 ，生成维修单号-->
+    <select id="rp_number" resultType="String">
+    	 SELECT 'ER'+ CONVERT (VARCHAR (100), GETDATE (), 12)+ (right (100 + count (DISTINCT rp_number) + 1, 2))AS number
+		 FROM device_repair WHERE CONVERT (VARCHAR (20), reporttime, 112) = CONVERT (VARCHAR (20), GETDATE (), 112);
+    </select>
+    
+    <!-- 删除 -->
+	<update id="delete">
+		UPDATE device_repair SET delState = 0 WHERE id = #{id}
+	</update>
+	
+	<!-- 状态为0的所有设备的编号 -->
+	<select id="selectDnumber" resultType="com.numberONe.entity.DeviceRepairFormMap">
+		SELECT * FROM device_repair WHERE confirm_status = 0 AND dnumber = #{dnumber}
+	</select>
+	
+	<select id="findWaitRepairPage" resultType="com.numberONe.entity.DeviceRepairFormMap">
+		SELECT
+			TOP (100000)*
+		FROM
+			device_repair
+		WHERE
+			confirm_status = 0
+		AND delState = 1
+		<if test="rp_number != null and rp_number != ''">
+		AND rp_number like '%${rp_number}%'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<select id="findRpRecordPage" resultType="com.numberONe.entity.DeviceRepairFormMap">
+		SELECT
+			TOP (100000)*
+		FROM
+			device_repair
+		WHERE
+			confirm_status NOT IN(0)
+		AND delState = 1
+		<if test="begintime != null and begintime != ''">
+		AND begintime &gt;= '${begintime}'
+		</if>
+		<if test="stoptime != null and stoptime != ''">
+		AND stoptime &lt;= '${stoptime}'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+</mapper>

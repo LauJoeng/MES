@@ -1,10 +1,11 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="EMS:war exploded">
-    <output-path>$PROJECT_DIR$/target/numberone-auth-Maven</output-path>
+    <output-path>$PROJECT_DIR$/classes/artifacts/EMS_war_exploded</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="EMS" />
+          <element id="library" level="application" name="bootstrap" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.springframework:spring-context:4.1.4.RELEASE" />
@@ -68,9 +69,6 @@
           <element id="library" level="project" name="Maven: commons-net:commons-net:2.2" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.2" />
         </element>
-      </element>
-      <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/target/numberone-auth-Maven/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="EMS/web/Web" />
     </root>

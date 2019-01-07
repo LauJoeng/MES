@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.DevicePartMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	<select id="findDevicePartPage" resultType="com.numberONe.entity.DevicePartFormMap">
+		SELECT top(100000)* FROM device_part WHERE isdel = 1
+		<if test="fid != null and fid != ''">
+		AND fid like '%${fid}%'
+		</if>
+		<if test="column != null">
+         order by ${column} ${sort}
+        </if>
+	</select>
+	
+	<!-- 删除 -->
+	<update id="delete">
+		UPDATE device_part SET isdel = 0,deltime = getdate(),delop = #{delop} WHERE id = #{id}
+	</update>
+	
+	<select id="findIdByfno" parameterType="String" resultType="Integer">
+		SELECT
+			id
+		FROM
+			device_part
+		WHERE
+			fid = #{fno} 
+	</select>
+	
+</mapper>
